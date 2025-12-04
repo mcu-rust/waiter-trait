@@ -13,16 +13,16 @@ use fugit::MicrosDurationU32;
 /// use waiter_trait::{prelude::*, TimedTickWaiter, StdInterval};
 ///
 /// let w = TimedTickWaiter::<Instant, _>::new(
-///     StdInterval::new(Duration::from_millis(8)),
+///     StdInterval::new(Duration::from_millis(400)),
 ///     Duration::from_secs(1).as_nanos() as u32,
 /// );
 ///
-/// let mut t = w.start(10.millis());
+/// let mut t = w.start(500.millis());
 /// assert!(!t.timeout());
 /// assert!(!t.timeout());
 /// assert!(t.timeout());
 ///
-/// let mut t = w.start(10.millis());
+/// let mut t = w.start(500.millis());
 /// assert!(!t.timeout());
 /// assert!(!t.timeout());
 /// t.restart();

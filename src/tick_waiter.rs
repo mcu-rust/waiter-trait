@@ -13,8 +13,8 @@ use fugit::{
 /// use waiter_trait::{prelude::*, TickWaiter, StdInterval};
 ///
 /// let w = TickWaiter::<Instant, _, _>::ns_u64(
-///     10.millis().into(),
-///     StdInterval::new(Duration::from_millis(8)),
+///     500.millis().into(),
+///     StdInterval::new(Duration::from_millis(400)),
 ///     Duration::from_secs(1).as_nanos() as u32,
 /// );
 ///

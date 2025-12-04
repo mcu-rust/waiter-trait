@@ -23,11 +23,11 @@ See [crate](https://crates.io/crates/waiter-trait)
 ### Example in `std` environment
 
 ```rust
-use waiter_trait::{Waiter, WaiterStatus, StdWaiter};
+use waiter_trait::{Waiter, WaiterStatus, StdWaiter, StdInterval};
 use std::time::Duration;
 
 // Initialize limit time and interval time.
-let waiter = StdWaiter::new(Duration::from_millis(80), Some(Duration::from_millis(50)));
+let waiter = StdWaiter::new(Duration::from_millis(80), StdInterval::new(Duration::from_millis(50)));
 
 fn foo(waiter: impl Waiter) {
     let mut t = waiter.start();

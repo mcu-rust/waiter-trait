@@ -10,9 +10,9 @@ use std::{
 ///
 /// ```
 /// use std::time::Duration;
-/// use waiter_trait::{Waiter, WaiterStatus, StdWaiter};
+/// use waiter_trait::{Waiter, WaiterStatus, StdWaiter, StdInterval};
 ///
-/// let w = StdWaiter::new(Duration::from_millis(10), Some(Duration::from_millis(10)));
+/// let w = StdWaiter::new(Duration::from_millis(10), StdInterval::new(Duration::from_millis(10)));
 /// let mut t = w.start();
 /// assert!(!t.timeout());
 /// assert!(t.timeout());
@@ -21,23 +21,21 @@ use std::{
 /// assert!(!t.timeout());
 /// assert!(t.timeout());
 /// ```
-pub struct StdWaiter {
+pub struct StdWaiter<I> {
     timeout: Duration,
-    interval: Option<Duration>,
+    interval: I,
 }
 
-impl StdWaiter {
+impl<I: Interval> StdWaiter<I> {
     /// - `timeout`
-    /// - `interval`: Before the time limit expires, this action will execute each time `timeout()` is called.
-    ///     - `None`: do nothing
-    ///     - `Some(Duration::ZERO)`: call `yield_now()`
-    ///     - `Some(Duration)`: call `sleep(Duration)`
-    pub fn new(timeout: Duration, interval: Option<Duration>) -> Self {
+    /// - `interval`: Before the time limit expires,
+    ///    this action will execute each time `timeout()` is called.
+    pub fn new(timeout: Duration, interval: I) -> Self {
         Self { timeout, interval }
     }
 }
 
-impl Waiter for StdWaiter {
+impl<I: Interval> Waiter for StdWaiter<I> {
     #[inline]
     fn start(&self) -> impl WaiterStatus {
         StdWaiterStatus {
@@ -47,22 +45,18 @@ impl Waiter for StdWaiter {
     }
 }
 
-pub struct StdWaiterStatus<'a> {
+pub struct StdWaiterStatus<'a, I> {
     start_time: Instant,
-    waiter: &'a StdWaiter,
+    waiter: &'a StdWaiter<I>,
 }
 
-impl<'a> WaiterStatus for StdWaiterStatus<'a> {
+impl<'a, I: Interval> WaiterStatus for StdWaiterStatus<'a, I> {
     #[inline]
     fn timeout(&mut self) -> bool {
         if self.start_time.elapsed() >= self.waiter.timeout {
             true
         } else {
-            match self.waiter.interval {
-                None => (),
-                Some(Duration::ZERO) => yield_now(),
-                Some(dur) => sleep(dur),
-            }
+            self.waiter.interval.interval();
             false
         }
     }
@@ -87,24 +81,24 @@ impl TickInstant for Instant {
 
 #[derive(Clone)]
 pub struct StdInterval {
-    dur: Duration,
+    duration: Duration,
 }
 
 impl StdInterval {
-    /// - `dur`: the action in `interval()`.
+    /// - `duration`: the action in `interval()`.
     ///     - `Duration::ZERO`: call `yield_now()`
-    ///     - `Duration`: call `sleep(Duration)`
-    pub fn new(dur: Duration) -> Self {
-        Self { dur }
+    ///     - `Duration`: call `sleep(duration)`
+    pub fn new(duration: Duration) -> Self {
+        Self { duration }
     }
 }
 
 impl Interval for StdInterval {
     #[inline]
     fn interval(&self) {
-        match self.dur {
+        match self.duration {
             Duration::ZERO => yield_now(),
-            dur => sleep(dur),
+            duration => sleep(duration),
         }
     }
 }
@@ -115,7 +109,7 @@ mod tests {
 
     #[test]
     fn std_waiter() {
-        let w = StdWaiter::new(Duration::from_millis(10), None);
+        let w = StdWaiter::new(Duration::from_millis(10), NonInterval::new());
         let mut t = w.start();
         assert!(!t.timeout());
         sleep(Duration::from_millis(1));
@@ -124,7 +118,10 @@ mod tests {
         assert!(t.timeout());
         assert!(t.timeout());
 
-        let w = StdWaiter::new(Duration::from_millis(10), Some(Duration::from_millis(5)));
+        let w = StdWaiter::new(
+            Duration::from_millis(500),
+            StdInterval::new(Duration::from_millis(260)),
+        );
         let mut t = w.start();
         assert!(!t.timeout());
         assert!(!t.timeout());
