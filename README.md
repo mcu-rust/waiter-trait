@@ -1,6 +1,13 @@
 # waiter-trait
 Traits used to wait and timeout in a `no-std` embedded system.
 
+## Usage
+```shell
+cargo add waiter-trait
+```
+
+See [crate](https://crates.io/crates/waiter-trait)
+
 ## Features
 
 - `std`: Disabled by default.
