@@ -29,7 +29,7 @@ pub struct StdWaiter<I> {
 impl<I: Interval> StdWaiter<I> {
     /// - `timeout`
     /// - `interval`: Before the time limit expires,
-    ///    this action will execute each time `timeout()` is called.
+    ///   this action will execute each time `timeout()` is called.
     pub fn new(timeout: Duration, interval: I) -> Self {
         Self { timeout, interval }
     }

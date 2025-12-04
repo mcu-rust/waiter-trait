@@ -21,6 +21,9 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - run: cargo check
       - run: cargo test --features=std
+      - run: cargo fmt --all --check
+      - run: cargo clippy --all-targets --all-features -- -D warnings
+      - run: cargo rustdoc --all-features -- -D warnings
 
   publish:
     if: github.ref_type == 'tag'
