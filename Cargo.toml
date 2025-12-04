@@ -1,9 +1,9 @@
 [package]
     authors = ["Jalon Wong <jalonwong@gmail.com>"]
-    categories = ["embedded", "no-std"]
     description = "Traits used to wait and timeout."
     documentation = "https://docs.rs/waiter-trait"
     edition = "2024"
+    keywords = ["embedded", "no-std"]
     license = "MIT OR Apache-2.0"
     name = "waiter-trait"
     readme = "README.md"
