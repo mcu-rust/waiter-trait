@@ -4,7 +4,7 @@ use fugit::{
     MicrosDurationU32, MicrosDurationU64, MillisDurationU32, NanosDurationU32, NanosDurationU64,
 };
 
-/// A [`Waiter`] implementation for embedded system.
+/// [`Waiter`] implementation for embedded system.
 ///
 /// # Examples
 ///

@@ -4,7 +4,7 @@ use std::{
     time::{Duration, Instant},
 };
 
-/// A [`Waiter`] implementation for `std`.
+/// [`Waiter`] implementation for `std`.
 ///
 /// # Examples
 ///
@@ -45,6 +45,7 @@ impl<I: Interval> Waiter for StdWaiter<I> {
     }
 }
 
+/// [`WaiterStatus`] implementation for `std`.
 pub struct StdWaiterStatus<'a, I> {
     start_time: Instant,
     waiter: &'a StdWaiter<I>,
@@ -79,6 +80,7 @@ impl TickInstant for Instant {
     }
 }
 
+/// [`Interval`] implementation for `std`.
 #[derive(Clone)]
 pub struct StdInterval {
     duration: Duration,

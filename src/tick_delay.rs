@@ -3,7 +3,7 @@ use core::marker::PhantomData;
 use embedded_hal::delay::DelayNs;
 use fugit::ExtU32;
 
-/// A `DelayNs` implementation
+/// [`DelayNs`] implementation
 ///
 /// # Examples
 ///
