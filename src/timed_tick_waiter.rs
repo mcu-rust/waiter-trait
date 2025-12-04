@@ -4,6 +4,8 @@ use fugit::MicrosDurationU32;
 
 /// A [`Waiter`] implementation for embedded system.
 ///
+/// The difference from [`TickWaiter`] is that it supports setting timeout at `start()`.
+///
 /// # Examples
 ///
 /// ```

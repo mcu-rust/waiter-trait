@@ -1,10 +1,19 @@
 //! Traits used to wait and timeout in a `no-std` embedded system.
 //!
-//! ## Features
+//! # Features
 //!
 //!- `std`: Disabled by default.
 //!
-//! # Examples
+//! # Usage
+//!
+//! 1. New a [`Waiter`] or [`TimedWaiter`] implementation.
+//! 2. Call `start()` to get a [`WaiterStatus`] implementation.
+//! 3. Call [`timeout()`](WaiterStatus::timeout) to check if the time limit expires.
+//!     1. [`Interval::interval`] is usually called in [`timeout()`](WaiterStatus::timeout)
+//!        before the time limit expires. It also depends on your implementation.
+//! 4. Call [`restart()`](WaiterStatus::restart) to reset the timeout condition if necessary.
+//!
+//! ## Example in `std` environment
 //!
 //! ```
 //! use waiter_trait::{Waiter, WaiterStatus, StdWaiter};
@@ -31,10 +40,11 @@
 //! # Implementations
 //!
 //! For developers, you can choose one of the following options.
-//! - Implement [`Waiter`], [`TimedWaiter`], and [`WaiterStatus`] then use them.
-//! - Implement [`TickInstant`] and [`Interval`] then use [`TickWaiter`] or [`TimedTickWaiter`].
-//!     - If you want to do nothing in the `interval()`, just give it [`NonInterval`],
-//!       and in this way you can use `DelayNs` separately.
+//! - Implement [`Waiter`] or [`TimedWaiter`], and [`WaiterStatus`] then use them.
+//! - Implement [`TickInstant`] then use [`TickWaiter`] or [`TimedTickWaiter`].
+//!     - Simply give [`NonInterval`] to [`Waiter`], If don't need interval.
+//!       In this way, you can also use `DelayNs` or `sleep` separately.
+//!     - Or you can implement [`Interval`] for your own interval action.
 //! - Using [`Counter`], if you don't have any tick source.
 //!
 //! It also provides a implementation of `DelayNs` named [`TickDelay`]
@@ -67,6 +77,7 @@ pub trait Waiter {
     fn start(&self) -> impl WaiterStatus;
 }
 
+/// The difference from [`Waiter`] is that it supports setting timeout at `start()`.
 pub trait TimedWaiter {
     /// Set timeout and start waiting.
     fn start(&self, timeout: MicrosDurationU32) -> impl WaiterStatus;
@@ -90,7 +101,8 @@ pub trait TickInstant: Copy {
     }
 }
 
-/// Can be implement for `yield`, `sleep` or do nothing.
+/// It is usually called at [`WaiterStatus::timeout`] before the time limit expires.
+/// It can be implemented for `yield`, `sleep` or do nothing.
 pub trait Interval: Clone {
     fn interval(&self);
 }
