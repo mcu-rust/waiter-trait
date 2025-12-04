@@ -111,12 +111,12 @@ mod tests {
 
     #[test]
     fn std_waiter() {
-        let w = StdWaiter::new(Duration::from_millis(10), NonInterval::new());
+        let w = StdWaiter::new(Duration::from_millis(200), NonInterval::new());
         let mut t = w.start();
         assert!(!t.timeout());
-        sleep(Duration::from_millis(1));
+        sleep(Duration::from_millis(20));
         assert!(!t.timeout());
-        sleep(Duration::from_millis(9));
+        sleep(Duration::from_millis(180));
         assert!(t.timeout());
         assert!(t.timeout());
 

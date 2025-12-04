@@ -8,7 +8,7 @@
     name = "waiter-trait"
     readme = "README.md"
     repository = "https://github.com/mcu-rust/waiter-trait"
-    version = "0.9.0"
+    version = "0.9.1"
 
     [package.metadata.docs.rs]
         features = ["std"]
