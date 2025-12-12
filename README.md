@@ -1,3 +1,7 @@
+# Deprecated
+This crate has been refactored into crate [timeout-trait](https://crates.io/crates/timeout-trait), so I'm no longer maintaining it.
+If you’d like to take over the crate name, feel free to contact me on GitHub. I'm happy to transfer ownership to you.
+
 # waiter-trait
 Traits used to wait and timeout in a `no-std` embedded system.
 
